@@ -92,7 +92,6 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -102,6 +101,9 @@
     }
   },
   "cli": {
-    "analytics": "051c4fe1-45e8-4edf-9564-15846dead648"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
+    "analytics": "88d9c012-a839-48d8-8073-02853b71a549"
   }
 }

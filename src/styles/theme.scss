@@ -1,0 +1,78 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Definição dos temas
+$app-light-theme: mat.define-theme((color: (theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+        use-system-variables: true,
+      ),
+      typography: (brand-family: 'Nunito',
+        plain-family: 'Open Sans',
+        use-system-variables: true,
+      ),
+      density: (scale: 0,
+      ),
+    ));
+
+$app-dark-theme: mat.define-theme((color: (theme-type: dark,
+        primary: mat.$violet-palette,
+        tertiary: mat.$orange-palette,
+        use-system-variables: true,
+      ),
+      typography: (brand-family: 'Nunito',
+        plain-family: 'Open Sans',
+        use-system-variables: true,
+      ),
+      density: (scale: 0,
+      ),
+    ));
+
+// Variáveis de tema claro
+:root {
+  --app-primary: #{mat.get-theme-color($app-light-theme, primary)};
+  --app-background: #fff;
+  --app-on-background: #{mat.get-theme-color($app-light-theme, neutral, 20)};
+  --app-inverse: #{mat.get-theme-color($app-light-theme, neutral, 50)};
+
+  @include mat.all-component-themes($app-light-theme);
+  @include mat.typography-hierarchy($app-light-theme);
+  @include mat.system-level-colors($app-light-theme);
+  @include mat.system-level-typography($app-light-theme);
+}
+
+// Variáveis de tema escuro
+html.dark {
+  & {
+    --app-primary: #{mat.get-theme-color($app-dark-theme, primary)};
+    --app-background: #{mat.get-theme-color($app-dark-theme, neutral, 20)};
+    --app-on-background: #fff;
+    --app-inverse: #{mat.get-theme-color($app-dark-theme, neutral, 50)};
+
+    @include mat.all-component-colors($app-dark-theme);
+    @include mat.system-level-colors($app-dark-theme);
+    @include mat.system-level-typography($app-dark-theme);
+  }
+}
+
+// Ajustes gerais de estilos
+html {
+  background: var(--app-background);
+  color: var(--app-on-background);
+}
+
+html.dark {
+  background: var(--app-background);
+  color: var(--app-on-background);
+}
+
+// TailwindCSS integration
+body {
+  --mat-table-background-color: var(--app-background);
+  --mat-table-row-item-outline-color: theme('borderColor.DEFAULT');
+  --mat-paginator-container-background-color: none;
+  --app-transition-transform: transform 0.15s linear;
+  --mdc-protected-button-container-height: 2.375rem;
+}
