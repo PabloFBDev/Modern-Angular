@@ -1,8 +1,9 @@
-<mat-toolbar>
+<mat-toolbar data-testid="matToolbar">
   <div class="container">
     <div class="content-container">
-      <div class="text-center">Gerenciador</div>
+      <div data-testid="title" class="text-center">{{ title() }}</div>
     </div>
   </div>
-  <app-theme-toggle />
+
+  <app-theme-toggle data-testid="themeToggle" />
 </mat-toolbar>

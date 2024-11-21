@@ -34,8 +34,9 @@ describe(AppComponent.name, () => {
   });
 
   it('should render the HeaderComponent', () => {
-    const headerElement =
-      fixture.debugElement.nativeElement.querySelector('app-header');
+    const headerElement = fixture.debugElement.nativeElement.querySelector(
+      '[data-testid=header]'
+    );
     expect(headerElement).toBeTruthy(); // Verifica se o HeaderComponent foi renderizado no DOM
   });
 

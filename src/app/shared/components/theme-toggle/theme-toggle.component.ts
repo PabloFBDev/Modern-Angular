@@ -16,15 +16,22 @@ import { ThemeService } from '../../../services/theme.service';
   ],
   template: `
     <button
+      data-testid="button"
       type="button"
       mat-icon-button
       class="m-1 p-0"
       (click)="themeService.toggleColorTheme()"
       [matTooltip]="themeService.isCurrentThemeDark() ? 'Claro' : 'Escuro'">
       @if (themeService.isCurrentThemeDark()) {
-        <mat-icon class="font-icon text-amber-500">light_mode</mat-icon>
+        <mat-icon
+          data-testid="icon-light-mode"
+          class="font-icon text-amber-500">
+          light_mode
+        </mat-icon>
       } @else {
-        <mat-icon class="font-icon text-sky-500">dark_mode</mat-icon>
+        <mat-icon data-testid="icon-dark-mode" class="font-icon text-sky-500">
+          dark_mode
+        </mat-icon>
       }
     </button>
   `,
