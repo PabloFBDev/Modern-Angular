@@ -11,8 +11,12 @@ import { HeaderComponent } from './shared/components/header/header.component';
 export class AppComponent implements OnInit {
   private themeService = inject(ThemeService);
 
-  public ngOnInit(): void {
-    const currentColorTheme = this.themeService.getPreferredColorTheme();
-    this.themeService.setColorTheme(currentColorTheme);
+  ngOnInit(): void {
+    try {
+      const currentColorTheme = this.themeService.getPreferredColorTheme();
+      this.themeService.setColorTheme(currentColorTheme);
+    } catch (error) {
+      console.error('Error fetching theme:', error);
+    }
   }
 }

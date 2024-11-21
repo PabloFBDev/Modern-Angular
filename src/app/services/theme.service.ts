@@ -27,9 +27,13 @@ export class ThemeService {
      */
     const storedThemeObject = localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}';
 
-    const parsedStoredThemeObject = JSON.parse(storedThemeObject);
-
-    return parsedStoredThemeObject.colorTheme;
+    try {
+      const parsedStoredThemeObject = JSON.parse(storedThemeObject);
+      return parsedStoredThemeObject.colorTheme;
+    } catch {
+      console.error('Invalid JSON in localStorage for theme.');
+      return; // Retorna undefined em caso de erro
+    }
   }
 
   private _setStoredColorTheme(colorTheme: ColorThemeT): void {

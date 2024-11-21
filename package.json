@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "ng test --watch",
+    "test:coverage": "ng test --watch --code-coverage --browsers=ChromeHeadless",
     "lint": "ng lint",
     "lint:fix": "eslint . --fix --ext .ts,.html",
     "prettier": "npx prettier --write ."
