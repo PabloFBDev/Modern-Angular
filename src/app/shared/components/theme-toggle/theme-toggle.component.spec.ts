@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule, MatIconButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ThemeService } from '../../../services/theme.service';
 import { ThemeToggleComponent } from './theme-toggle.component';
@@ -9,66 +8,67 @@ import { ThemeToggleComponent } from './theme-toggle.component';
 describe(ThemeToggleComponent.name, () => {
   let component: ThemeToggleComponent;
   let fixture: ComponentFixture<ThemeToggleComponent>;
-  let themeServiceSpy: jasmine.SpyObj<ThemeService>;
+  let themeServiceMock: jest.Mocked<ThemeService>; // Mockado com Jest
 
   beforeEach(async () => {
-    themeServiceSpy = jasmine.createSpyObj('ThemeService', [
-      'toggleColorTheme',
-      'isCurrentThemeDark',
-    ]);
+    // Mock do ThemeService com Jest
+    themeServiceMock = {
+      toggleColorTheme: jest.fn(),
+      isCurrentThemeDark: jest.fn(),
+    } as unknown as jest.Mocked<ThemeService>;
 
+    // Configuração do ambiente de teste
     await TestBed.configureTestingModule({
       imports: [
         ThemeToggleComponent,
         MatButtonModule,
         MatCardModule,
-        MatIcon,
-        MatIconButton,
         MatTooltipModule,
       ],
-      providers: [{ provide: ThemeService, useValue: themeServiceSpy }],
+      providers: [{ provide: ThemeService, useValue: themeServiceMock }],
     }).compileComponents();
 
+    // Criando o componente e o fixture
     fixture = TestBed.createComponent(ThemeToggleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
+  afterEach(() => {
+    jest.clearAllMocks(); // Limpa os mocks após cada teste
+  });
+
+  it('deve criar o componente', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call toggleColorTheme when button is clicked', () => {
+  it('deve chamar toggleColorTheme quando o botão for clicado', () => {
     const button = fixture.nativeElement.querySelector('[data-testid=button]');
     button.click();
     fixture.detectChanges();
-    expect(themeServiceSpy.toggleColorTheme).toHaveBeenCalled();
+    expect(themeServiceMock.toggleColorTheme).toHaveBeenCalled();
   });
 
-  it('should display light_mode icon when theme is dark', () => {
-    themeServiceSpy.isCurrentThemeDark.and.returnValue(true);
+  it('deve exibir o ícone "light_mode" quando o tema estiver escuro', () => {
+    themeServiceMock.isCurrentThemeDark.mockReturnValue(true);
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector(
       '[data-testid=icon-light-mode]'
     );
-    expect(icon.textContent.trim())
-      .withContext('Expected light_mode icon when theme is dark')
-      .toBe('light_mode');
+    expect(icon.textContent.trim()).toBe('light_mode');
   });
 
-  it('should display dark_mode icon when theme is light', () => {
-    themeServiceSpy.isCurrentThemeDark.and.returnValue(false);
+  it('deve exibir o ícone "dark_mode" quando o tema estiver claro', () => {
+    themeServiceMock.isCurrentThemeDark.mockReturnValue(false);
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector(
       '[data-testid=icon-dark-mode]'
     );
-    expect(icon.textContent.trim())
-      .withContext('Expected dark_mode icon when theme is light')
-      .toBe('dark_mode');
+    expect(icon.textContent.trim()).toBe('dark_mode');
   });
 
-  it('should not display dark_mode icon when theme is dark', () => {
-    themeServiceSpy.isCurrentThemeDark.and.returnValue(true);
+  it('não deve exibir o ícone "dark_mode" quando o tema estiver escuro', () => {
+    themeServiceMock.isCurrentThemeDark.mockReturnValue(true);
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector(
       '[data-testid=icon-dark-mode]'
@@ -76,15 +76,15 @@ describe(ThemeToggleComponent.name, () => {
     expect(icon).toBeNull();
   });
 
-  it('should display "Claro" tooltip when theme is dark', () => {
-    themeServiceSpy.isCurrentThemeDark.and.returnValue(true);
+  it('deve exibir o tooltip "Claro" quando o tema estiver escuro', () => {
+    themeServiceMock.isCurrentThemeDark.mockReturnValue(true);
     fixture.detectChanges();
     const button = fixture.nativeElement.querySelector('[data-testid=button]');
     expect(button.getAttribute('ng-reflect-message')).toBe('Claro');
   });
 
-  it('should display "Escuro" tooltip when theme is light', () => {
-    themeServiceSpy.isCurrentThemeDark.and.returnValue(false);
+  it('deve exibir o tooltip "Escuro" quando o tema estiver claro', () => {
+    themeServiceMock.isCurrentThemeDark.mockReturnValue(false);
     fixture.detectChanges();
     const button = fixture.nativeElement.querySelector('[data-testid=button]');
     expect(button.getAttribute('ng-reflect-message')).toBe('Escuro');

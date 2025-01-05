@@ -32,9 +32,7 @@ describe(HeaderComponent.name, () => {
   });
 
   it('the title property should be the correct value', () => {
-    expect(component.title())
-      .withContext('title should be qual to "Gerenciador"')
-      .toEqual('Gerenciador');
+    expect(component.title()).toEqual('Gerenciador');
 
     const nativeElementText = nativeElement.querySelector(
       '[data-testid=title]'

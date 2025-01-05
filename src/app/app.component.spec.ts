@@ -4,68 +4,77 @@ import { ThemeService } from './services/theme.service';
 import { HeaderComponent } from './shared/components/header/header.component';
 
 describe(AppComponent.name, () => {
-  let component: AppComponent; // Referência para o componente a ser testado
-  let fixture: ComponentFixture<AppComponent>; // Representação do componente no ambiente de testes
-  let themeServiceSpy: jasmine.SpyObj<ThemeService>; // Mock do serviço ThemeService
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+  let service: jest.Mocked<ThemeService>;
 
   beforeEach(async () => {
-    // Criando um mock para ThemeService com métodos espiados
-    themeServiceSpy = jasmine.createSpyObj('ThemeService', [
-      'getPreferredColorTheme',
-      'setColorTheme',
-    ]);
+    // Mock do ThemeService usando Jest
+    service = {
+      getPreferredColorTheme: jest.fn().mockReturnValue('dark'),
+      setColorTheme: jest.fn(),
+      isCurrentThemeDark: jest.fn().mockReturnValue(true), // Configurado como método
+    } as unknown as jest.Mocked<ThemeService>;
 
-    // Configurando o mock para retornar "dark" por padrão
-    themeServiceSpy.getPreferredColorTheme.and.returnValue('dark');
-
-    // Configurando o ambiente de testes para o AppComponent
+    // Configurando o ambiente de testes
     await TestBed.configureTestingModule({
-      imports: [AppComponent, HeaderComponent], // Declarando os componentes utilizados
-      providers: [{ provide: ThemeService, useValue: themeServiceSpy }], // Injetando o mock do ThemeService
+      imports: [AppComponent, HeaderComponent],
+      providers: [{ provide: ThemeService, useValue: service }],
     }).compileComponents();
 
-    // Criando uma instância do componente e do fixture
+    // Criando o componente e o fixture
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
   });
 
-  it('should create the app', () => {
-    expect(component).toBeTruthy(); // Valida se o componente foi inicializado
+  afterEach(() => {
+    jest.clearAllMocks(); // Limpa os mocks após cada teste
   });
 
-  it('should render the HeaderComponent', () => {
+  it('deve criar o aplicativo', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('deve renderizar o HeaderComponent', () => {
+    fixture.detectChanges(); // Garante que a renderização do DOM seja concluída
     const headerElement = fixture.debugElement.nativeElement.querySelector(
       '[data-testid=header]'
     );
-    expect(headerElement).toBeTruthy(); // Verifica se o HeaderComponent foi renderizado no DOM
+    expect(headerElement).toBeTruthy();
   });
 
-  it('should call ThemeService methods on ngOnInit', () => {
-    component.ngOnInit(); // Executa o ciclo de inicialização do componente
+  describe('Método ngOnInit', () => {
+    it('deve chamar os métodos do ThemeService corretamente', () => {
+      component.ngOnInit(); // Executa o ciclo de inicialização
 
-    expect(themeServiceSpy.getPreferredColorTheme).toHaveBeenCalledTimes(1); // Verifica se o método foi chamado uma vez
-    expect(themeServiceSpy.setColorTheme).toHaveBeenCalledWith('dark'); // Verifica se o tema "dark" foi configurado
-  });
+      expect(service.getPreferredColorTheme).toHaveBeenCalledTimes(1);
+      expect(service.setColorTheme).toHaveBeenCalledWith('dark');
+    });
 
-  it('should handle different themes returned by ThemeService', () => {
-    themeServiceSpy.getPreferredColorTheme.and.returnValue('light'); // Simula o retorno de um tema diferente
-    component.ngOnInit(); // Executa o ciclo de inicialização do componente
+    it('deve lidar com temas diferentes retornados pelo ThemeService', () => {
+      service.getPreferredColorTheme.mockReturnValue('light'); // Simula outro tema
+      component.ngOnInit();
 
-    expect(themeServiceSpy.setColorTheme).toHaveBeenCalledWith('light'); // Verifica se o tema "light" foi configurado
-  });
+      expect(service.setColorTheme).toHaveBeenCalledWith('light');
+    });
 
-  it('should handle errors in ThemeService gracefully', () => {
-    spyOn(console, 'error'); // Espião para capturar logs de erro
-    themeServiceSpy.getPreferredColorTheme.and.throwError(
-      'Error fetching theme'
-    );
+    it('deve lidar graciosamente com erros no ThemeService', () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      service.getPreferredColorTheme.mockImplementation(() => {
+        throw new Error('Error fetching theme');
+      });
 
-    component.ngOnInit(); // Executa o método ngOnInit
+      component.ngOnInit();
 
-    expect(console.error).toHaveBeenCalledWith(
-      'Error fetching theme:',
-      jasmine.any(Error)
-    );
-    expect(themeServiceSpy.setColorTheme).not.toHaveBeenCalled(); // Não deve chamar setColorTheme
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error fetching theme:',
+        expect.any(Error)
+      );
+      expect(service.setColorTheme).not.toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore(); // Restaura o console.error original
+    });
   });
 });
