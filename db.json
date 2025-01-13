@@ -5,6 +5,21 @@
       "id": 1,
       "name": "Work",
       "color": "red"
+    },
+    {
+      "id": 2,
+      "name": "Projects",
+      "color": "yellow"
+    },
+    {
+      "id": 3,
+      "name": "Personal",
+      "color": "green"
+    },
+    {
+      "id": 4,
+      "name": "Shopping",
+      "color": "blue"
     }
   ]
 }

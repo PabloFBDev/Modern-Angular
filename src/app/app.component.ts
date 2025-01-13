@@ -1,9 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MainComponent } from './layouts/main/main.component';
 import { ThemeService } from './services/theme.service';
-import { HeaderComponent } from './shared/components/header/header.component';
 
-const COMPONENTS = [HeaderComponent, MainComponent];
+const COMPONENTS = [MainComponent];
 
 @Component({
   selector: 'app-root',
