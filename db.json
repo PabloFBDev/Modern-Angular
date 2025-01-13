@@ -1,0 +1,10 @@
+{
+  "task": [],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Work",
+      "color": "red"
+    }
+  ]
+}

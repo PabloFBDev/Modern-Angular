@@ -1,11 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { MainComponent } from './layouts/main/main.component';
 import { ThemeService } from './services/theme.service';
 import { HeaderComponent } from './shared/components/header/header.component';
 
+const COMPONENTS = [HeaderComponent, MainComponent];
+
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [...COMPONENTS],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
